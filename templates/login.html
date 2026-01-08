@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block block_head -%}
+        <link rel="stylesheet" href="static/css/login.css">
+{%- endblock %}
+
+{% block block_main -%}
+
+        <p class="welcome">Login</p>
+        <form method="post" action="/register" class="login-form">
+            <label for="username">Email or UserID:</label>
+            <input type="text" id="username" name="username" size="25" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" size="25" required>
+
+            <input type="image" src="" alt="missed">
+            <textarea name="aaa" id="">aaa bbb ccc</textarea>
+
+            <button type="submit">Login</button>
+        </form>
+        <footer>Copyrigt &copy;2026 Hailing Fang</footer>
+
+
+{%- endblock %}

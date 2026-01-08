@@ -1,0 +1,38 @@
+html,
+body,
+main,
+p,
+a {
+    padding: 0;
+    border: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+body {
+
+    background-image: url(../imgs/social_network_background.png);
+    background-repeat: no-repeat;
+    z-index: -1;
+    background-color: rgba(36, 88, 156, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    min-height: 100vh;
+    flex: 1 1 auto;
+    width: 60em;
+    margin: 0px auto;
+    background-color: rgba(186, 140, 84, 0.7);
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 1em;
+}
