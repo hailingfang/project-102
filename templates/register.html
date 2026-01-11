@@ -1,12 +1,37 @@
 {% extends "base.html" %}
 
 {% block block_head -%}
-        <link rel="stylesheet" href="static/css/index.css">
+        <link rel="stylesheet" href="static/css/register.css">
 {%- endblock %}
 
 {% block block_main -%}
 
-            <p class="welcome">Register</p>
+            <head>Register</head>
+            <form action="/register" method="post" name="register" class="register-data" enctype="multipart/form-data">
+                <div>
+                    <label for="userid">UserID:</label>
+                    <input type="text" name="userid" id="userid" size="30" min="3" max="16" required>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" placeholder="username@exampel.com" size="30" required>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" size="30" min="9" max="32" required>
+                </div>
+                <div>
+                    <label for="password-confirm">Confirm Password</label>
+                    <input type="password" name="password-confirm" id="password-confirm" size="30" min="9" max="32" required>
+                </div>
+
+                <div>
+                    <label for="avatar">Upload Your Avatar</label>
+                    <input type="file" name="avatar" id="avatar" accept=".png, .jpeg, .jpg">
+                </div>
+                <button type="submit" name="register-button" value="register">Register</button>
+            </form>
+
             <footer>Copyrigt &copy;2026 Hailing Fang</footer>
 
 {%- endblock %}

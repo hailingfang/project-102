@@ -1,24 +1,8 @@
-html,
-body,
-main,
-p,
-a {
-    padding: 0;
-    border: 0;
-    margin: 0;
-}
-
-a {
-    text-decoration: none;
-}
-
-
 body {
 
     background-image: url(../imgs/social_network_background.png);
     background-repeat: no-repeat;
-    z-index: -1;
-    background-color: rgba(36, 88, 156, 0.5);
+    background-color: rgba(64, 122, 197, 0.5);
     display: flex;
     flex-direction: column;
 }
@@ -28,7 +12,7 @@ main {
     flex: 1 1 auto;
     width: 60em;
     margin: 0px auto;
-    background-color: rgba(186, 140, 84, 0.7);
+    background-color: rgba(250, 250, 250, 0.6);
 }
 
 footer {

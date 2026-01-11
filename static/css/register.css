@@ -1,0 +1,24 @@
+head {
+    margin-bottom: 3em;
+}
+
+form {
+    width: 30em;
+    margin: 10em auto;
+}
+
+label {
+    display: block;
+}
+
+input {
+    font-size: 1.2em;
+    display: block;
+    line-height: 1.5em;
+    margin-bottom: .6em;
+}
+
+button {
+    margin: 1em 0em;
+    font-size: 1.3em;
+}
