@@ -7,15 +7,16 @@
 {% block block_main -%}
 
         <p class="welcome">Login</p>
-        <form action="/login"  method="post" class="login-form">
+
+        <form action="/login"  method="post"  name="login_form" class="login-form">
             <label for="user">UserID:</label>
             <input type="text" name="userid" id="userid" size="25" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" size="25" required>
 
-            <button type="submit">Login</button>
+            <button type="submit" name="button" value="login_button">Login</button>
         </form>
-        <footer>Copyrigt &copy;2026 Hailing Fang</footer>
+        <p>{{ note }}</p>
 
 
 {%- endblock %}

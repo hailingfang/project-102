@@ -6,15 +6,21 @@
 
 {% block block_main -%}
 
-            <head>Register</head>
+            <p>Register</p>
+
+            {% if not register_success %}
             <form action="/register" method="post" name="register" class="register-data" enctype="multipart/form-data">
                 <div>
                     <label for="userid">UserID:</label>
-                    <input type="text" name="userid" id="userid" size="30" min="3" max="16" required>
+                    <input type="text" name="userid" id="userid" size="30" min="1" max="16" required>
                 </div>
                 <div>
-                    <label for="email">Email:</label>
-                    <input type="email" name="email" id="email" placeholder="username@exampel.com" size="30" required>
+                    <label for="nickname">Nickname:</label>
+                    <input type="text" name="nickname" id="nickname" size="30" min="1" max="16" required>
+                </div>                
+                <div>
+                    <label for="phone-email">Phone Number or Email:</label>
+                    <input type="text" name="phone-email" id="phone-email" placeholder="username@exampel.com" size="30" required>
                 </div>
                 <div>
                     <label for="password">Password</label>
@@ -25,13 +31,16 @@
                     <input type="password" name="password-confirm" id="password-confirm" size="30" min="9" max="32" required>
                 </div>
 
-                <div>
-                    <label for="avatar">Upload Your Avatar</label>
-                    <input type="file" name="avatar" id="avatar" accept=".png, .jpeg, .jpg">
-                </div>
-                <button type="submit" name="register-button" value="register">Register</button>
+                <input type="hidden" name="form-name" value="regist-form">
+                <button type="submit" name="button" value="register">Register</button>
             </form>
 
-            <footer>Copyrigt &copy;2026 Hailing Fang</footer>
+            <p>{{ note }}</p>
+            
+            {% elif register_success %}
+            <p>Register Successfully</p>
+            <p>Please <a href="/login">Login</a></p>
+
+            {% endif %}
 
 {%- endblock %}

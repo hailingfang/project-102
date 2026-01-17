@@ -2,16 +2,12 @@
 
 {% block block_head -%}
         <link rel="stylesheet" href="static/css/register.css">
+        <meta http-equiv="refresh" content="3;url=/login">
 {%- endblock %}
 
 {% block block_main -%}
 
-            <head>Register</head>
-            <p>Register Sucessfully</p>
-            <p>Wellcome: {{ request.form["userid"] }}</p>
-            <p>Email: {{ request.form["email"] }}</p>
-            <img src="{{ url_for('avatar', userid=request.form['userid'], avatar='avatar.png') }}" alt="avatar" width="200">
-            <p>Please <a href="login">Login</a></p>
-            <footer>Copyrigt &copy;2026 Hailing Fang</footer>
+            <p>Register Successfully</p>
+            <p>Will redirect to  <a href="/login">Login</a> webpage.</p>
 
 {%- endblock %}

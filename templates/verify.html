@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block block_head -%}
+        <link rel="stylesheet" href="static/css/verify.css">
+{%- endblock %}
+
+{% block block_main -%}
+
+            <p>Verifing</p>
+
+
+            <p>A code has been sent to your {{ contact_type }}({{ contact_address }}), 
+                please input it to complete the verification.</p>
+
+            <form action="/verify" method="post" name="verify" class="verify-phone-email">
+                <div>
+                    <label for="verify-code">Verifing Code:</label>
+                    <input type="text" name="verify_code" id="verify-code" size="30" min="6" max="6" required>
+                </div>
+                
+                <input type="hidden" name="form_name" value="verify_form">
+                <button type="submit" name="button" value="verify">Submmit</button>
+                <p>or</p>
+
+            </form>
+
+            <form action="/verify" method="post" name="resend_code" class="resend-code-form">
+                <button type="submit" name="button" value="resend">Resend</button>
+            </form>
+
+            <p class="note">{{ note }}</p>
+
+{%- endblock %}

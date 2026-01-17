@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block block_head -%}
+        <link rel="stylesheet" href="static/css/verify.css">
+        <meta http-equiv="refresh" content="3;url={{ redirect_url }}">
+{%- endblock %}
+
+{% block block_main -%}
+
+            <p>Verify Successfully</p>
+            <p>Will redirect to <a herf="{{ redirect_url }}">Register</a> webpage.</p>
+            
+{%- endblock %}
