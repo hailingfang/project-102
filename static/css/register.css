@@ -1,4 +1,6 @@
-head {
+header {
+    font-size: 2em;
+    color: rgb(0, 174, 255);
     margin-bottom: 3em;
 }
 

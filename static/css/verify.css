@@ -1,0 +1,20 @@
+.verify-phone-email {
+    margin: 3em auto;
+}
+
+
+.verify-phone-email label,
+.verify-phone-email input {
+
+    display: block;
+}
+
+
+.verify-phone-email button {
+
+
+    margin: 1em auto;
+    padding: .3em 1em;
+    font-size: 1.2em;
+
+}
