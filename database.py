@@ -9,90 +9,74 @@ class Sqlite3_DB():
 
     def disconnect(self):
         self.connect.close()
+        self.connect = None
 
 
-    def if_userid_used(self, userid):
-        cur = self.connect.cursor()
-        cur.execute("SELECT 1 FROM users WHERE userid = ? LIMIT 1", (userid,))
-        res = cur.fetchone()
-        cur.close()
-        if res:
-            return True
+    def query(self, table, column_name, value, select_column_s=None):
+        ent = None
+        error = None
+
+        if select_column_s:
+            select_column_s = ", ".join(select_column_s)
         else:
-            return False
+            select_column_s = "*"
 
-
-    def if_phone_used(self, phone):
         cur = self.connect.cursor()
-        cur.execute("SELECT 1 FROM users WHERE phone = ? LIMIT 1", (phone,))
-        res = cur.fetchone()
-        cur.close()
-        if res:
-            return True
-        else:
-            return False
-
-
-    def if_email_used(self, email):
-        cur = self.connect.cursor()
-        cur.execute("SELECT 1 FROM users WHERE email = ? LIMIT 1", (email,))
-        res = cur.fetchone()
-        cur.close()
-        if res:
-            return True
-        else:
-            return False
-
-
-    def add_user(self, userid, nickname, phone, email, salt, password_hash, status=0):
-        cur = self.connect.cursor()
-        cur.execute("INSERT OR IGNORE INTO users VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    (userid, nickname, phone, email, salt, password_hash, status))
-    
-        self.connect.commit()
-
-        if cur.rowcount == 1:
-            return_v = 0
-        else:
-            return_v = 1
-        cur.close()
-
-        return return_v
-
-
-    def get_user(self, userid):
-        cur = self.connect.cursor()
-        cur.execute("SELECT * FROM users WHERE userid = ? LIMIT 1", (userid, ))
-        entry = cur.fetchone()
-        cur.close()
-        return entry
-    
-
-    def rm_user(self, userid):
-        if self.if_userid_used(userid):
-            cur = self.connect.cursor()
-            cur.execute("DELETE FROM users WHERE userid = ?", (userid, ))
-            self.connect.commit()
+        try:
+            cur.execute(f"SELECT {select_column_s} FROM {table} WHERE {column_name} = ?", (value,))
+        except Exception as err:
+            error = err
+        finally:
+            ent = cur.fetchall()
             cur.close()
-            return 0
+
+        return ent, error
+
+
+    def insert(self, table, value_s, insert_clumn_s=None):
+        error = None
+
+        if insert_clumn_s:
+            insert_clumn_s = ", ".join(insert_clumn_s)
+            insert_clumn_s = f"({insert_clumn_s})"
         else:
-            return 1
+            insert_clumn_s = ""
+        place_holders = ", ".join(["?"] * len(value_s))
 
-
-    def get_all_users(self):
         cur = self.connect.cursor()
-        cur.execute("SELECT userid FROM users")
-        entry_s = cur.fetchall()
-        return entry_s
+        try:
+            cur.execute(f"INSERT INTO {table} {insert_clumn_s} VAULE ({place_holders})", value_s)
+        except Exception as err:
+            error = err
+        finally:
+            cur.close()
+
+        return error
+
+
+    def delete(self, table, clumn_name, value):
+        error = None
+
+        cur = self.connect.cursor()
+        try:
+            cur.execute(f"DELETE FROM {table} WHERE {clumn_name} = ?", (value,))
+        except Exception as err:
+            error = err
+        finally:
+            cur.close()
+
+        return error
+
+
 
 
 def test():
     db = Sqlite3_DB("users.db")
     salt = os.urandom(16)
     password_hash = hashlib.pbkdf2_hmac("sha256", "19921003".encode(), salt, 1000_000)
-    r = db.add_user("zhaojt", "zhao", "19911321193", "zhaojt@outlook.com", salt, password_hash, 0)
+    r = db.add_user("zhaojt", "zhao", "19911321193", "zhaojt@outlook.com", 260119110201, salt, password_hash, 0)
     print(r)
-    r = db.add_user("fanghl", "ben", "19911321192", "fanghl@outlook.com", salt, password_hash, 0)
+    r = db.add_user("fanghl", "ben", "19911321192", "fanghl@outlook.com", 260119110101, salt, password_hash, 0)
     print(r)
     ent = db.get_user("zhaojt")
     print(ent)
