@@ -1,0 +1,56 @@
+.user-sections {
+    display: flex;
+    justify-content: start;
+    column-gap: .3em;
+}
+
+.user-sections > div {
+    float: 0 0 8em;
+    padding: .3em 1em;
+    border: 0;
+    border-radius: 5px;
+    margin: 0;
+    background-color: rgb(119, 113, 113);
+}
+
+
+.edit-profile {
+    text-align: right;
+    width: 7em;
+    padding: .3em 1em;
+    border: 0;
+    margin-left: auto;
+}
+
+
+
+.user-identity {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 2em 3em;
+    border: 0;
+    margin: 0;
+}
+
+.user-identity-avtar {
+    flex: 0 0 200px;
+    border-radius: 10px;
+}
+
+.user-identity-text {
+    flex: 1 1 auto;
+    padding: 1em 3em;
+}
+
+.user-identity-text > p:nth-child(1) {
+    font-size: 1.5em;
+    color: black;
+    font-weight: bold;
+}
+
+.user-identity-text > p:nth-child(2) {
+    font-size: .8em;
+    color: rgb(32, 32, 32);
+}
+

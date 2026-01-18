@@ -6,39 +6,15 @@
 
 {% block block_main -%}
 
-            <div class="user-identity">
-                <div class="user-identity-avtar">
-                    <img src="" alt="avatar" width="200" height="200">
-                </div>
-                <div class="user-identity-text">
-                    <p class="user-nickname">{{ nickname }}</p>
-                    <p class="user-userid">{{ userid }}</p>
-                </div>
-            </div>
+    <div class="user-sections">
+        <div>Profile</div>
+        <div>Search</div>
+        <div>Chatting</div>
+    </div>
 
-            <div class="user-basic-info">
-                <p class="user-basic-infor-entry"><span>{{ infor_key }}</span>: <span>{{ infor_value }}</span></p>
-            </div>
 
-            <div class="user-education-info">
-
-            </div>
-
-            <div class="user-occupation-info">
-
-            </div>
-
-            <div class="user-photos">
-
-            </div>
-
-            <div class="user-words">
-
-            </div>
-
-            <div class="user-life"></div>
-
-            <p>{{ userid }}</p>
-
+    {% include "user-profile.html" %}
 
 {%- endblock %}
+
+
