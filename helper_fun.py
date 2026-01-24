@@ -116,9 +116,9 @@ def delete_session(session_id):
 
 def check_session(session_id):
     db = database.Sqlite3_DB("auth/session.db")
-    ent, error = db.query("live_session", "session_id", session_id)
-    if ent:
-        session_id, userid, expire_time = ent
+    ents, error = db.query("live_session", "session_id", session_id)
+    if ents:
+        session_id, userid, expire_time = ents[0]
     else:
         return None
     
@@ -215,7 +215,7 @@ def check_login_form(login_form):
         check_res["userid"].append("userid-not-registered")
     
     else:
-        (salt, password_hash), error = db.query("user_identiry", "userid", userid,
+        [(salt, password_hash)], error = db.query("user_identity", "userid", userid,
                                        ("salt", "password_hash"))
         password_ok = compare_password(password_hash_stored=password_hash, salt=salt, password=password)
         if not password_ok:

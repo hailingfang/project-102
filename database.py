@@ -42,10 +42,12 @@ class Sqlite3_DB():
         else:
             insert_clumn_s = ""
         place_holders = ", ".join(["?"] * len(value_s))
-
+        print(insert_clumn_s)
+        print(place_holders)
         cur = self.connect.cursor()
         try:
-            cur.execute(f"INSERT INTO {table} {insert_clumn_s} VAULE ({place_holders})", value_s)
+            cur.execute(f"INSERT INTO {table} {insert_clumn_s} VALUES ({place_holders})", value_s)
+            self.connect.commit()
         except Exception as err:
             error = err
         finally:
@@ -60,6 +62,7 @@ class Sqlite3_DB():
         cur = self.connect.cursor()
         try:
             cur.execute(f"DELETE FROM {table} WHERE {clumn_name} = ?", (value,))
+            self.connect.commit()
         except Exception as err:
             error = err
         finally:

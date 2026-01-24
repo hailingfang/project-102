@@ -68,7 +68,7 @@ def register():
             contact_type, contact_address = \
                 helper_fun.get_contact_type_and_address(register_form["phone"],
                                                         register_form["email"])
-            flask.session["verigy_data"] = {"contact_type": contact_type,
+            flask.session["verify_data"] = {"contact_type": contact_type,
                                      "contact_address": contact_address}
             return flask.redirect(flask.url_for("verify"))
         
@@ -159,7 +159,6 @@ def login():
                                          datetime.datetime.now() +
                                          datetime.timedelta(days=30))
 
-
             flask.session.clear()
             resp = flask.redirect(flask.url_for("user"))
             resp.set_cookie("session_id", session_id, httponly=True)
@@ -200,7 +199,9 @@ def user():
             helper_fun.delete_session(flask.request.cookies.get("session_id"))
             return flask.redirect(flask.url_for("login"))
     else:
-        return flask.redirect(flask.url_for("login"))
+        resp = flask.make_response(flask.redirect(flask.url_for("login")))
+        resp.delete_cookie("session_id")
+        return resp
 
 
 @app.route("/get-user-photo/<userid>/<photo_name>")
