@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import flask
+from flask import Flask, request, session, render_template, make_response, redirect, url_for, send_file
 import helper_fun
 import random
 import secrets
 import datetime
 
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.secret_key = secrets.token_bytes()
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
@@ -16,171 +16,173 @@ app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(days=30)
 @app.route("/", methods=["GET"])
 def index():
     print(">>>index")
-    print(flask.session)
-    print(flask.request.cookies)
+    print(session)
+    print(request.cookies)
 
-    if flask.request.cookies.get("session_id"):
-        userid = helper_fun.check_session(flask.request.cookies.get("session_id"))
+    session_id = request.cookies.get("session_id")
+
+    if session_id:
+        userid = helper_fun.check_session(session_id)
         if userid:
-            #show a index page, that has user login infor. show some other information
-            #download mobile app, jump to /user webpage.
-            return flask.render_template("index.html", userid=userid)
+            return render_template("index.html", userid=userid)
         else:
-            resp = flask.make_response(flask.render_template("index.html", userid=""))
+            resp = make_response(render_template("index.html", userid=None))
             resp.delete_cookie("session_id")
             return resp
     else:
-        return flask.render_template("index.html", userid="")
+        return render_template("index.html", userid=None)
 
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    print(">>>register")
-    print(flask.session)
-    print(flask.request.cookies)
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    print(">>>signup")
+    print(session)
+    print(request.cookies)
 
-    if flask.request.method == "GET":
-        if flask.session.get("verify_status") == "OK":
-            register_form = flask.session["register_data"]
-            userid = register_form["userid"]
-            nickname = register_form["nickname"]
-            phone = register_form["phone"]
-            email = register_form["email"]
-            password = register_form["password"]
-            helper_fun.add_user(userid, nickname, phone, email, password,
-                                datetime.datetime.now())
-            flask.session.clear()
-            return flask.render_template("register-successfully.html")
-        
-        elif flask.request.cookies.get("session_id"):
-            return flask.redirect(flask.url_for("index"))
-        
+    if request.method == "GET":
+        if request.cookies.get("session_id"):
+            return redirect(url_for("user"))
+        elif session.get("verify_signup") == "OK":
+            signup_form = session["signup_form"]
+            helper_fun.add_user(userid=signup_form["userid"],
+                                nickname=signup_form["nickname"],
+                                phone=signup_form["phone"],
+                                email=signup_form["email"],
+                                password=signup_form["password"],
+                                datetime=datetime.datetime.now())
+            session.clear()
+            return render_template("signup-successfully.html")
         else:
-            return flask.render_template("register.html", note="")
+            return render_template("signup.html")
 
-    elif flask.request.method == "POST":
-        register_form = flask.request.form
-        error_count, check_res, register_form = \
-            helper_fun.check_register_form(register_form)
-        if error_count == 0:
-            flask.session["context"] = "register"
-            flask.session["register_data"] = register_form
+    elif request.method == "POST":
+        signup_form = request.form
+        error, signup_form = \
+            helper_fun.check_signup_form(signup_form)
+        if not error:
+            session["verify_context"] = "signup"
+            session["signup_form"] = signup_form
             contact_type, contact_address = \
-                helper_fun.get_contact_type_and_address(register_form["phone"],
-                                                        register_form["email"])
-            flask.session["verify_data"] = {"contact_type": contact_type,
-                                     "contact_address": contact_address}
-            return flask.redirect(flask.url_for("verify"))
+                helper_fun.get_contact_type_and_address(signup_form["phone"],
+                                                        signup_form["email"])
+            session["contact_type"] = contact_type
+            session["contact_address"] = contact_address
+            return redirect(url_for("verify"))
         
         else:
-            note = ";".join([kk + ":" + ",".join(check_res[kk]) 
-                             for kk in check_res if check_res[kk]])
-            return flask.render_template("register.html", note=note)
+            return render_template("register.html", error=error)
 
 
 @app.route("/verify", methods=["GET", "POST"])
 def verify():
     print(">>>verify")
-    print(flask.session)
-    print(flask.request.cookies)
+    print(session)
+    print(request.cookies)
 
-    if flask.request.method == 'GET':
-        if flask.session.get("context") == "register":
-            contact_type = flask.session["verify_data"]["contact_type"]
-            contact_address = flask.session["verify_data"]["contact_address"]
+    if request.method == 'GET':
+        if session.get("verify_context") == "signup":
+            contact_type = session["contact_type"]
+            contact_address = session["contact_address"]
             verify_code = format(random.randint(0, 999999), "06d")
-            flask.session["verify_code"] = verify_code
-            helper_fun.send_verifying_code(contact_type, contact_address)
-            return flask.render_template("verify.html",
+            session["verify_code"] = verify_code
+            helper_fun.send_verify_code(contact_type, contact_address)
+            return render_template("verify.html",
                                          contact_type=contact_type,
                                          contact_address=contact_address)
  
         else:
-            return flask.render_template("error.html"), 404
+            return render_template("error.html"), 404
 
-    elif flask.request.method == "POST":
-        if flask.session.get("context") == "register":
-            verify_form = flask.request.form
+    elif request.method == "POST":
+        if session.get("verify_context") == "signup":
+            verify_form = request.form
             if verify_form["button"] == "verify":
                 if verify_form["verify_code"] == "123456": #flask.session["verify_code"]
-                    flask.session["verify_status"] = 'OK'
-                    return flask.render_template("verify-successfully.html",
-                                        redirect_url="/register")
+                    session["verify_signup"] = 'OK'
+                    return render_template("verify-successfully.html",
+                                        redirect_url="/signup")
                 else:
-                    contact_type = flask.session["verify_data"]["contact_type"]
-                    contact_address = flask.session["verify_data"]["contact_address"]
+                    contact_type = session["contact_type"]
+                    contact_address = session["contact_address"]
                     note = "verifying code is not corret"
-                    return flask.render_template("verify.html",
-                                                contact_type=contact_type,
-                                                contact_address=contact_address,
-                                                note=note)
+                    return render_template("verify.html",
+                                            contact_type=contact_type,
+                                            contact_address=contact_address,
+                                            note=note)
 
             elif verify_form["button"] == "resend":
-                if flask.session["session_context"] == "register":
-                    contact_type = flask.session["verify_data"]["contact_type"]
-                    contact_address = flask.session["verify_data"]["contact_address"]
-                    verify_code = format(random.randint(0, 999999), "06d")
-                    flask.session["verify_code"] = verify_code
-                    helper_fun.send_verifying_code(contact_type, contact_address)
-                    return flask.render_template("verify.html",
-                                                contact_type=contact_type,
-                                                contact_address=contact_address)
-                else:
-                    return flask.render_template("error.html"), 404
+                contact_type = session["contact_type"]
+                contact_address = session["contact_address"]
+                verify_code = format(random.randint(0, 999999), "06d")
+                session["verify_code"] = verify_code
+                helper_fun.send_verifying_code(contact_type, contact_address)
+                note = "the verifying code has been resent"
+                return render_template("verify.html",
+                                        contact_type=contact_type,
+                                        contact_address=contact_address,
+                                        note=note)
+            
             else:
-                return flask.render_template("error.html"), 404
+                return render_template("error.html"), 404
+
         else:
-            return flask.render_template("error.html"), 404
+            return render_template("error.html"), 404
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/signin", methods=["GET", "POST"])
 def login():
-    print(">>>login")
-    print(flask.session)
-    print(flask.request.cookies)
+    print(">>>signin")
+    print(session)
+    print(request.cookies)
 
-    if flask.request.method == "GET":
-        if flask.request.cookies.get("session_id"):
-            return flask.redirect(flask.url_for("user"))
+    if request.method == "GET":
+        if request.cookies.get("session_id"):
+            return redirect(url_for("user"))
 
         else:
-            return flask.render_template("login.html")
+            return render_template("signin.html")
 
-    elif flask.request.method == "POST":
-        login_form = flask.request.form
-        error_count, check_res, login_form = helper_fun.check_login_form(login_form)
-        if error_count == 0:
-            userid = login_form["userid"]
+    elif request.method == "POST":
+        signin_form = request.form
+        error, signin_form = helper_fun.check_login_form(signin_form)
+        if not error:
+            userid = signin_form["userid"]
             session_id = secrets.token_urlsafe(32)
-            helper_fun.add_login_logout_entry(userid, "login",
-                                              datetime.datetime.now(), 0)
+            helper_fun.add_signin_signout_entry(userid=userid,
+                                                action="signin",
+                                                action_time=datetime.datetime.now(),
+                                                action_result=0)
             helper_fun.add_session_entry(session_id, 
                                          userid,
                                          datetime.datetime.now() +
                                          datetime.timedelta(days=30))
 
-            flask.session.clear()
-            resp = flask.redirect(flask.url_for("user"))
+            session.clear()
+            resp = make_response(redirect(url_for("user")))
             resp.set_cookie("session_id", session_id, httponly=True)
             return resp
         
         else:
-            note = ";".join([kk + ":" + ",".join(check_res[kk]) for
-                             kk in check_res if check_res[kk]])
-            return flask.render_template("login.html", note=note)
+            return render_template("login.html", error=error)
 
 
-@app.route("/logout")
+@app.route("/signout")
 def logout():
-    print(">>>logout")
-    print(flask.session)
-    print(flask.request.cookies)
+    print(">>>signout")
+    print(session)
+    print(request.cookies)
     
-    if flask.request.cookies.get("session_id"):
-        helper_fun.delete_session(flask.request.cookies.get("session_id"))
-    flask.session.clear()
-    
-    resp = flask.make_response(flask.render_template("index.html", userid=""))
+    session_id = request.cookies.get("session_id")
+    if session_id:
+        userid = helper_fun.check_session(session_id)
+        if userid:
+            helper_fun.add_signin_signout_entry(userid=userid,
+                                                action="signout",
+                                                action_time=datetime.datetime.now(),
+                                                action_result=0)
+            helper_fun.delete_session(session_id)
+    session.clear()
+    resp = make_response(redirect(url_for("index")))
     resp.delete_cookie("session_id")
     return resp
 
@@ -188,37 +190,20 @@ def logout():
 @app.route("/user")
 def user():
     print(">>>user")
-    print(flask.session)
-    print(flask.request.cookies)
+    print(session)
+    print(request.cookies)
 
-    if flask.request.cookies.get("session_id"):
-        userid = helper_fun.check_session(flask.request.cookies.get("session_id"))
+    if request.cookies.get("session_id"):
+        userid = helper_fun.check_session(request.cookies.get("session_id"))
         if userid:
-            return flask.render_template("user.html", userid=userid)
+            return render_template("user.html", userid=userid)
         else:
-            helper_fun.delete_session(flask.request.cookies.get("session_id"))
-            return flask.redirect(flask.url_for("login"))
+            session.clear()
+            resp = make_response(redirect(url_for("signin")))
+            resp.delete_cookie("session_id")
+            return resp
     else:
-        resp = flask.make_response(flask.redirect(flask.url_for("login")))
-        resp.delete_cookie("session_id")
-        return resp
-
-
-@app.route("/get-user-photo/<userid>/<photo_name>")
-def get_user_photo(userid, photo_name):
-    #Check authorization
-
-    photo_path = helper_fun.check_user_photo(userid, photo_name)
-    if photo_path:
-        return flask.send_file(photo_path)
-    else:
-        return ""
-
-
-@app.route("/test")
-def test():
-    return flask.render_template("test.html")
-
+        return redirect(url_for("login"))
 
 
 if __name__ == "__main__":

@@ -85,7 +85,7 @@ def delete_user(userid):
     return error
 
 
-def add_login_logout_entry(userid, action, action_time, action_result):
+def add_signin_signout_entry(userid, action, action_time, action_result):
     action_time = change_datetime_to_integer(action_time)      
 
     db = database.Sqlite3_DB("auth/log.db")
@@ -115,6 +115,9 @@ def delete_session(session_id):
 
 
 def check_session(session_id):
+    if not session_id:
+        return None
+
     db = database.Sqlite3_DB("auth/session.db")
     ents, error = db.query("live_session", "session_id", session_id)
     if ents:
@@ -130,79 +133,68 @@ def check_session(session_id):
         return userid
 
 
-def check_register_form(register_form):
-    userid = register_form["userid"]
-    nickname = register_form["nickname"] if register_form["nickname"] else \
-        register_form["userid"]
-    
-    phone_email = register_form["phone-email"]
-    password = register_form["password"]
-    password_confirm = register_form["password-confirm"]
+def check_signup_form(signup_form):
+    userid = signup_form["userid"]
+    nickname = signup_form["nickname"] if signup_form["nickname"] else \
+        signup_form["userid"]
+    contact = signup_form["contact"]
+    password = signup_form["password"]
+    password_confirm = signup_form["password-confirm"]
 
-    error_count = 0
-    check_res = {
+    error = {
         "userid": [],
         "nickname": [],
-        "phone-email": [],
-        "email": [],
+        "contact": [],
         "password": []
     }
+    signup_form_new = {}
 
     if not (len(userid) >= 1 and len(userid) <= 16):
-        error_count += 1
-        check_res["userid"].append("format-error")
+        error["userid"].append("the format of userid is wrong")
     elif if_user_exists(userid):
-        error_count += 1
-        check_res["userid"].append("userid-used")
+        error["userid"].append("the userid has been used")
+    else:
+        signup_form_new["userid"] = userid
 
     if not (len(nickname) >= 1 and len(nickname) <= 16):
-        error_count += 1
-        check_res["nickname"].append("format-error")
-    
-    phone = None
-    email = None
-    if len(phone_email) == 11 and phone_email[0] == '1' and phone_email.isdigit():
-        phone = phone_email
-    elif email_re_tmp.match(phone_email):
-        email = phone_email
+        error["nickname"].append("the format of nickname is wrong")
     else:
-        error_count += 1
-        check_res["phone-email"].append("format-error")
+        signup_form["nickname"] = nickname
+
+    if len(contact) == 11 and contact[0] == '1' and contact.isdigit():
+        signup_form["phone"] = contact
+    elif email_re_tmp.match(contact):
+        signup_form["email"] = contact
+    else:
+        error["contact"].append("the format of contact address is wrong")
     
-    if phone and if_phone_used(phone):
-        error_count += 1
-        check_res["phone-email"].append("phone-used")
+    if signup_form["phone"] and if_phone_used(signup_form["phone"]):
+        error["contact"].append("the phone number has been used by other")
     
-    if email and if_email_used(email):
-        error_count += 1
-        check_res["phone-email"].append("email-used")
+    if signup_form["email"] and if_email_used(signup_form["email"]):
+        error["contact"].append("the email has been used by other")
 
     if password != password_confirm:
-        error_count += 1
-        check_res["password"].append("not-match")
+        error["password"].append("passwords inputted not match each other")
 
     if len(password) < 9:
-        error_count += 1
-        check_res["password"].append("format-error")
+        error["password"].append("the length of password is less than 9")
     
-    new_form = {"userid": userid, 
-                "nickname": nickname,
-                "phone": phone, 
-                "email": email,
-                "password": password}
+    signup_form_new["password"] = password
 
-    return error_count, check_res, new_form
+    error = {key: error[key] for key in error if error[key]}
+    return error, signup_form_new
 
 
-def check_login_form(login_form):
+def check_signin_form(signin_form):
     error_count = 0
     check_res = {
         "userid": [],
         "password": []
     }
 
-    userid = login_form["userid"]
-    password = login_form["password"]
+    userid = signin_form["userid"]
+    password = signin_form["password"]
 
     new_form = {
         "userid": userid,
