@@ -6,10 +6,41 @@
         {% block block_head %}{% endblock %}
     </head>
     <body>
-        <header>Welcome to Pea Garden</header>
+        <header>
+            <div class="logo-wrap">
+                <img  class="web-logo"  src="static/imgs/pea-garden.png" alt="pea-garden-logo" width="100">
+                <div class="web-name">豌豆园</div>
+            </div>
+            
+            <div class="user-nav">
+                {% if 1 %}
+                <div><a href="signin">登陆</a> 或 <a href="/signup">创建账号</a></div>
+                {% else %}
+                <div class="user-avatar"></div>
+                <div class="user-nav-list">
+                    <div>
+                        <div>nickname</div>
+                        <div>userid</div>
+                        <div>avatar</div>
+                    </div>
+
+                    <div>
+                        <div>chat</div>
+                        <div>look up</div>
+                        <div>profile</div>
+                    </div>
+
+                    <div>
+                        <div>setting</div>
+                        <div>sign out</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </header>
         <main>
             {% block block_main %}{% endblock %}
         </main>
-        <footer>Copyrigt &copy;2026 Hailing Fang</footer>
+        <footer>&copy;2026 Hailing Fang</footer>
     </body>
 </html>

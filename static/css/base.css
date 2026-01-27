@@ -1,33 +1,71 @@
 body {
-
-    background-image: url(../imgs/social_network_background.png);
-    background-repeat: no-repeat;
-    background-color: rgba(64, 122, 197, 0.5);
+    background-color: aliceblue;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
+
 header {
-    height: 10vh;
-    min-width: 60em;
-    background-color: rgb(16, 63, 184);
     flex: 0 0 auto;
+    background-color: rgb(105, 185, 177);
+    display: flex;
+    flex-direction: row;
+    min-width: 60rem;
 }
 
-main {
-    min-height: 83vh;
-    flex: 1 1 auto;
-    width: 60em;
-    margin: 0px auto;
-    background-color: rgba(250, 250, 250, 0.6);
-    box-shadow: 0 0 15px rgba(100, 150, 255, 0.6);
-    backdrop-filter: blur(10px);
+.logo-wrap {
+    flex: 0 0 13rem;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.web-logo {
+    margin-left: 2em;
+}
+
+.web-name {
+    writing-mode: vertical-lr;
+    letter-spacing: .2em;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.user-nav {
+    flex: 0 0 10rem;
+    margin-left: auto;
 
 }
+
+.user-nav > div {
+    font-size: 1.1rem;
+    padding: .2em 0em;
+}
+
+
+.user-nav-list {
+    position: absolute;
+    right: .3em;
+    top: 1em;
+    visibility: collapse;
+}
+
 
 footer {
-    min-height: 7vh;
-    min-width: 60em;
-    background-color: rgb(41, 129, 211);
-    flex: 1 1 auto;
+    flex: 0 0 auto;
+    background-color: rgb(82, 223, 211);
+    min-width: 60rem;
+    padding: 1em;
+    text-align: center;
 }
+
+
+main {    
+    flex: 1 1 auto;
+    min-width: 60rem;
+    background-color: rgb(64, 136, 199)
+}
+
+
+

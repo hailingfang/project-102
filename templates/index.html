@@ -6,13 +6,17 @@
 
 {% block block_main -%}
 
-            <div class="login-register-box">
-                <a href="login">Login</a>
-                <div>
-                    <a href="/forget-pw">Forget Password</a>
-                    <p>or</p>
-                    <a href="register">Register</a>
-                </div>
-            </div>
+    <div class="layout-wrapper">
+        <div class="welcome">Wellcome to Pea Garden</div>
+        <div class="website-introduction">Here you can look up people and chat with them.</div>
+
+        {% if not userid %}
+        <div class="chat-on-webpage"><a href="/signin">Chat On Web</a></div>
+        {% else %}
+        <div class="chat-on-webpage"><a href="/login">Chat On Web</a></div>
+        {% endif %}
+        <div class="download-app"><a href="">Download App</a></div>
+    </div>
+
 
 {%- endblock %}

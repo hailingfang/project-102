@@ -1,6 +1,9 @@
 html,
 body,
+header,
+footer,
 main,
+div,
 p,
 a {
     padding: 0;
