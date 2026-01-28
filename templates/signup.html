@@ -9,11 +9,11 @@
             <div class="layout-wrapper">
                 <form action="/signup" method="post" name="signup_form" class="signup-form" enctype="multipart/form-data">
                     <div>
-                        <label for="userid">用户ID:</label>
+                        <label for="userid">用户ID*:</label>
                         <input type="text" name="userid" id="userid" size="30" min="1" max="16" required>
                         <p class="note">1至16位的字母，数字及”-“的组合，不能以“-”开头</p>
                         {% if error.get("userid") %}
-                        <p class="error">{{ error.get["userid"] }}</p>
+                        <p class="error">{{ ";".join(error["userid"]) }}</p>
                         {% endif %}
                     </div>
                     <div>
@@ -21,27 +21,27 @@
                         <input type="text" name="nickname" id="nickname" size="30" min="1" max="16" required>
                         <p class="note">汉字或英文字符组合，可包含“_”和“-”</p>
                         {% if error.get("nickname") %}
-                        <p class="error">{{ error.get["nickname"] }}</p>
+                        <p class="error">{{ ";".join(error["nickname"]) }}</p>
                         {% endif %}                
                     </div>                
                     <div>
-                        <label for="contact">手机号或电子邮箱:</label>
+                        <label for="contact">手机号或电子邮箱*:</label>
                         <input type="text" name="contact" id="contact" placeholder="phone or email" size="30" required>
                         {% if error.get("contact") %}
-                        <p class="error">{{ error.get["contact"] }}</p>
+                        <p class="error">{{ ";".join(error["contact"]) }}</p>
                         {% endif %}
 
                     </div>
                     <div>
-                        <label for="password">密码：</label>
+                        <label for="password">密码*:</label>
                         <input type="password" name="password" id="password" size="30" min="9" max="32" required>
                         <p class="note">10 to 16 characters, numbers combination</p>
                         {% if error.get("password") %}
-                        <p class="error">{{ error.get["password"] }}</p>
+                        <p class="error">{{ ";".join(error["password"]) }}</p>
                         {% endif %}
                     </div>
                     <div>
-                        <label for="password-confirm">再次输入密码：</label>
+                        <label for="password-confirm">再次输入密码*:</label>
                         <input type="password" name="password-confirm" id="password-confirm" size="30" min="9" max="32" required>
                     </div>
 
