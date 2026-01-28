@@ -1,22 +1,27 @@
 {% extends "base.html" %}
 
 {% block block_head -%}
-        <link rel="stylesheet" href="static/css/login.css">
+        <link rel="stylesheet" href="static/css/signin.css">
 {%- endblock %}
 
 {% block block_main -%}
 
-        <p class="welcome">Login</p>
+        <div class="layout-wrapper">
 
-        <form action="/login"  method="post"  name="login_form" class="login-form">
-            <label for="user">UserID:</label>
-            <input type="text" name="userid" id="userid" size="25" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" size="25" required>
+            <form action="/signin"  method="post"  name="signin_form" class="signin-form">
+                <label for="userid">用户ID:</label>
+                <input type="text" name="userid" id="userid" size="25" required>
+                {% if error.get("userid") %}
+                <p class="error-msg">{{ ";".join(error["userid"]) }}</p>
+                {% endif %}
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password" size="25" required>
+                {% if error.get("password") %}
+                <p class="error-msg">{{ ";".join(error["password"]) }}</p>
+                {% endif %}
+                <button type="submit" name="button" value="signin_button">登陆</button>
+            </form>
 
-            <button type="submit" name="button" value="login_button">Login</button>
-        </form>
-        <p>{{ note }}</p>
-
+        </div>
 
 {%- endblock %}

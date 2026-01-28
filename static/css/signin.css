@@ -1,32 +1,33 @@
-.welcome {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: rgba(21, 65, 208, 0.815);
-    padding: .5em 0em .5em 1em;
+.layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-
-.login-form {
-    margin: 3em 0em 3em 3em;
-    font-size: 1.3em;
-    margin: 5em auto;
-    width: 10em;
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: .6rem;
+    margin-top: 3rem;
 }
 
-label,
-input,
-button {
+.signin-form > label {
     display: block;
+    font-size: 1.2rem;
+    margin-top: .3rem;
 }
 
-.login-form > button {
-    padding: .2em 1em .2em 1em;
-    font-size: 1.1em;
-    justify-self: center;
-    margin-top: 1em;
-    grid-column: 1 / 3;
+.signin-form > input {
+    display: block;
+    font-size: 1.2rem;
 }
 
-.login-form > input {
-    margin-bottom: .6em;
+.signin-form button {
+    font-size: 1.2rem;
+    width: 5rem;
+}
+
+.error-msg {
+    font-size: .8rem;
+    color: red;
 }
