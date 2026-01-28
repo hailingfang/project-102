@@ -49,7 +49,7 @@ def signup():
                                 phone=signup_form["phone"],
                                 email=signup_form["email"],
                                 password=signup_form["password"],
-                                datetime=datetime.datetime.now())
+                                signup_time=datetime.datetime.now())
             session.clear()
             return render_template("signup-successfully.html")
         else:
@@ -85,7 +85,7 @@ def verify():
             contact_address = session["contact_address"]
             verify_code = format(random.randint(0, 999999), "06d")
             session["verify_code"] = verify_code
-            helper_fun.send_verify_code(contact_type, contact_address)
+            helper_fun.send_verification_code(contact_type, contact_address)
             return render_template("verify.html",
                                          contact_type=contact_type,
                                          contact_address=contact_address)
@@ -104,23 +104,21 @@ def verify():
                 else:
                     contact_type = session["contact_type"]
                     contact_address = session["contact_address"]
-                    note = "verifying code is not corret"
+                    error = "verifying code is not corret"
                     return render_template("verify.html",
                                             contact_type=contact_type,
                                             contact_address=contact_address,
-                                            note=note)
+                                            error=error)
 
             elif verify_form["button"] == "resend":
                 contact_type = session["contact_type"]
                 contact_address = session["contact_address"]
                 verify_code = format(random.randint(0, 999999), "06d")
                 session["verify_code"] = verify_code
-                helper_fun.send_verifying_code(contact_type, contact_address)
-                note = "the verifying code has been resent"
+                helper_fun.send_verification_code(contact_type, contact_address)
                 return render_template("verify.html",
                                         contact_type=contact_type,
-                                        contact_address=contact_address,
-                                        note=note)
+                                        contact_address=contact_address)
             
             else:
                 return render_template("error.html"), 404

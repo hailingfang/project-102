@@ -64,14 +64,14 @@ def if_email_used(email):
         return False
 
 
-def add_user(userid, nickname, phone, email, password, register_time):
+def add_user(userid, nickname, phone, email, password, signup_time):
     salt, password_hash = hash_password(password)
-    register_time = change_datetime_to_integer(register_time)
+    signup_time = change_datetime_to_integer(signup_time)
     status = 0
 
     db = database.Sqlite3_DB("auth/users.db")
     error = db.insert("user_identity",
-               (userid, nickname, phone, email, register_time,
+               (userid, nickname, phone, email, signup_time,
                 salt, password_hash, status),
                ("userid", "nickname", "phone", "email", "register_time",
                 "salt", "password_hash", "status"))
@@ -219,7 +219,7 @@ def check_signin_form(signin_form):
     return error_count, check_res, new_form
     
 
-def send_verifying_code(contact_type, contact_address):
+def send_verification_code(contact_type, contact_address):
     pass
 
 
