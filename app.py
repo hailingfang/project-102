@@ -53,7 +53,7 @@ def signup():
             session.clear()
             return render_template("signup-successfully.html")
         else:
-            return render_template("signup.html")
+            return render_template("signup.html", error={})
 
     elif request.method == "POST":
         signup_form = request.form
@@ -70,7 +70,7 @@ def signup():
             return redirect(url_for("verify"))
         
         else:
-            return render_template("register.html", error=error)
+            return render_template("signup.html", error=error)
 
 
 @app.route("/verify", methods=["GET", "POST"])
