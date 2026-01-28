@@ -153,25 +153,26 @@ def check_signup_form(signup_form):
         error["userid"].append("the format of userid is wrong")
     elif if_user_exists(userid):
         error["userid"].append("the userid has been used")
-    else:
-        signup_form_new["userid"] = userid
+    signup_form_new["userid"] = userid
 
     if not (len(nickname) >= 1 and len(nickname) <= 16):
         error["nickname"].append("the format of nickname is wrong")
     else:
-        signup_form["nickname"] = nickname
+        signup_form_new["nickname"] = nickname
 
     if len(contact) == 11 and contact[0] == '1' and contact.isdigit():
-        signup_form["phone"] = contact
+        signup_form_new["phone"] = contact
+        signup_form_new["email"] = None
     elif email_re_tmp.match(contact):
-        signup_form["email"] = contact
+        signup_form_new["email"] = contact
+        signup_form_new["phone"] = None
     else:
         error["contact"].append("the format of contact address is wrong")
     
-    if signup_form["phone"] and if_phone_used(signup_form["phone"]):
+    if signup_form_new["phone"] and if_phone_used(signup_form_new["phone"]):
         error["contact"].append("the phone number has been used by other")
     
-    if signup_form["email"] and if_email_used(signup_form["email"]):
+    if signup_form_new["email"] and if_email_used(signup_form_new["email"]):
         error["contact"].append("the email has been used by other")
 
     if password != password_confirm:
@@ -183,6 +184,7 @@ def check_signup_form(signup_form):
     signup_form_new["password"] = password
 
     error = {key: error[key] for key in error if error[key]}
+
     return error, signup_form_new
 
 
