@@ -33,7 +33,7 @@ def create_users_db():
         phone TEXT UNIQUE,
         email TEXT UNIQUE,
         register_time INTEGER NOT NULL,
-        key BLOB NOT NULL,
+        salt BLOB NOT NULL,
         password_hash BLOB NOT NULL,
         status INTEGER NOT NULL)""")
 
