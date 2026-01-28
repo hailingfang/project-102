@@ -128,7 +128,7 @@ def verify():
 
 
 @app.route("/signin", methods=["GET", "POST"])
-def login():
+def signin():
     print(">>>signin")
     print(session)
     print(request.cookies)
@@ -138,12 +138,14 @@ def login():
             return redirect(url_for("user"))
 
         else:
-            return render_template("signin.html")
+            return render_template("signin.html", error={})
 
     elif request.method == "POST":
         signin_form = request.form
-        error, signin_form = helper_fun.check_login_form(signin_form)
+        error, signin_form = helper_fun.check_signin_form(signin_form)
+
         if not error:
+            print("+++++++", error)
             userid = signin_form["userid"]
             session_id = secrets.token_urlsafe(32)
             helper_fun.add_signin_signout_entry(userid=userid,
@@ -161,11 +163,11 @@ def login():
             return resp
         
         else:
-            return render_template("login.html", error=error)
+            return render_template("signin.html", error=error)
 
 
 @app.route("/signout")
-def logout():
+def signout():
     print(">>>signout")
     print(session)
     print(request.cookies)
@@ -201,7 +203,7 @@ def user():
             resp.delete_cookie("session_id")
             return resp
     else:
-        return redirect(url_for("login"))
+        return redirect(url_for("signin"))
 
 
 if __name__ == "__main__":

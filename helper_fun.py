@@ -36,7 +36,7 @@ def get_contact_type_and_address(phone, email):
 
 def if_user_exists(userid):
     db = database.Sqlite3_DB("auth/users.db")
-    ent, error = db.query("user_identity", "userid", userid)
+    error, ent = db.query("user_identity", "userid", userid)
     db.disconnect()
     if ent:
         return True
@@ -119,7 +119,7 @@ def check_session(session_id):
         return None
 
     db = database.Sqlite3_DB("auth/session.db")
-    ents, error = db.query("live_session", "session_id", session_id)
+    error, ents = db.query("live_session", "session_id", session_id)
     if ents:
         session_id, userid, expire_time = ents[0]
     else:
@@ -189,8 +189,7 @@ def check_signup_form(signup_form):
 
 
 def check_signin_form(signin_form):
-    error_count = 0
-    check_res = {
+    error = {
         "userid": [],
         "password": []
     }
@@ -198,25 +197,24 @@ def check_signin_form(signin_form):
     userid = signin_form["userid"]
     password = signin_form["password"]
 
-    new_form = {
+    signin_form_new = {
         "userid": userid,
         "password": password
     }
 
     db = database.Sqlite3_DB("auth/users.db")
     if not if_user_exists(userid):
-        error_count += 1
-        check_res["userid"].append("userid-not-registered")
+        error["userid"].append("user-not-exists")
     
     else:
-        [(salt, password_hash)], error = db.query("user_identity", "userid", userid,
+        error_db, [(salt, password_hash)] = db.query("user_identity", "userid", userid,
                                        ("salt", "password_hash"))
         password_ok = compare_password(password_hash_stored=password_hash, salt=salt, password=password)
         if not password_ok:
-            error_count += 1
-            check_res["password"].append("password-not-correct")
+            error["password"].append("password-not-correct")
+    error = {key: error[key] for key in error if error[key]}
     
-    return error_count, check_res, new_form
+    return error, signin_form_new
     
 
 def send_verification_code(contact_type, contact_address):

@@ -30,7 +30,7 @@ class Sqlite3_DB():
             ent = cur.fetchall()
             cur.close()
 
-        return ent, error
+        return error, ent
 
 
     def insert(self, table, value_s, insert_clumn_s=None):
@@ -42,8 +42,6 @@ class Sqlite3_DB():
         else:
             insert_clumn_s = ""
         place_holders = ", ".join(["?"] * len(value_s))
-        print(insert_clumn_s)
-        print(place_holders)
         cur = self.connect.cursor()
         try:
             cur.execute(f"INSERT INTO {table} {insert_clumn_s} VALUES ({place_holders})", value_s)
