@@ -6,28 +6,21 @@
 
 {% block block_main -%}
 
-            <p>Verifing</p>
-
-
-            <p>A code has been sent to your {{ contact_type }}({{ contact_address }}), 
-                please input it to complete the verification.</p>
-
-            <form action="/verify" method="post" name="verify" class="verify-phone-email">
-                <div>
-                    <label for="verify-code">Verifing Code:</label>
+            <div class="layout-wrapper">
+                <p class="note">一个验证码已经发向您的{{ contact_type }}({{ contact_address }}), 
+                    请在下方输入此验证码，完成验证。</p>
+                <form action="/verify" method="post" name="verify" class="verify-contact">
+                    <label for="verify_code">验证码:</label>
                     <input type="text" name="verify_code" id="verify-code" size="30" min="6" max="6" required>
-                </div>
-                
-                <input type="hidden" name="form_name" value="verify_form">
-                <button type="submit" name="button" value="verify">Submmit</button>
-                <p>or</p>
 
-            </form>
+                    <input type="hidden" name="form_name" value="verify_form">
+                    <button type="submit" name="button" value="resend" class="resend-form">重新发送验证码</button>
+                    {% if error %}
+                    <p class="error-msg">{{ error }}</p>
+                    {% endif %}
+                    <button type="submit" name="button" value="verify" class="verify-form-submit">提交</button>
+                </form>
+            </div>
 
-            <form action="/verify" method="post" name="resend_code" class="resend-code-form">
-                <button type="submit" name="button" value="resend">Resend</button>
-            </form>
-
-            <p class="note">{{ note }}</p>
 
 {%- endblock %}

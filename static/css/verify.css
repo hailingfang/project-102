@@ -1,20 +1,45 @@
-.verify-phone-email {
-    margin: 3em auto;
+.layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
-.verify-phone-email label,
-.verify-phone-email input {
+.note {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    padding: .3rem 0rem;
+    margin-top: 1rem;
+}
 
+
+.verify-contact label {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    margin-top: 1.3rem;
+}
+
+
+.verify-contact input {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    margin-top: 1.3rem;
+}
+
+
+.resend-form {
+    font-size: 1.3rem;
+}
+
+.error-msg {
+    font-size: .8rem;
+    color: red;
+}
+
+.verify-form-submit {
     display: block;
+    font-size: 1.3rem;
+    padding: .3rem 2rem;
+    margin-top: 1rem;
 }
 
-
-.verify-phone-email button {
-
-
-    margin: 1em auto;
-    padding: .3em 1em;
-    font-size: 1.2em;
-
-}

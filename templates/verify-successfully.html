@@ -6,8 +6,9 @@
 {%- endblock %}
 
 {% block block_main -%}
+            <div class="layout-wrapper">
+                <p>验证成功</p>
+                <p>3s后重定向到原来网页<a href="{{ redirect_url }}">{{ redirect_url }}</a></p>
+            </div>
 
-            <p>Verify Successfully</p>
-            <p>Redirect to <a href="{{ redirect_url }}">{{ redirect_url }}</a></p>
-            
 {%- endblock %}
