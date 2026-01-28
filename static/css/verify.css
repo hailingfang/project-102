@@ -6,29 +6,29 @@
 
 
 .note {
-    font-size: 1.3rem;
-    line-height: 1.3rem;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
     padding: .3rem 0rem;
     margin-top: 1rem;
 }
 
 
 .verify-contact label {
-    font-size: 1.3rem;
-    line-height: 1.3rem;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
     margin-top: 1.3rem;
 }
 
 
 .verify-contact input {
-    font-size: 1.3rem;
-    line-height: 1.3rem;
-    margin-top: 1.3rem;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+    margin-top: 1.2rem;
 }
 
 
 .resend-form {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
 }
 
 .error-msg {
@@ -38,7 +38,7 @@
 
 .verify-form-submit {
     display: block;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     padding: .3rem 2rem;
     margin-top: 1rem;
 }
