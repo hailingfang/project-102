@@ -28,84 +28,97 @@ def create_users_db():
     cur = db.cursor()
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_identity (
-        userid TEXT RPIMARY KEY,
-        nickname TEXT,
-        phone TEXT UNIQUE,
+        user_id TEXT RPIMARY KEY,
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        deleted_at INTEGER)""")
+
+    cur.execute("""CREATE TABLE IF NOT EXISTS user_credentials (
+        user_id TEXT RPIMARY KEY,
         email TEXT UNIQUE,
-        register_time INTEGER NOT NULL,
-        salt BLOB NOT NULL,
+        email_verified INTEGER NOT NULL DEFAULT 0,
+        phone TEXT UNIQUE,
+        phone_verified INTEGER NOT NULL DEFAULT 0,
+        password_algo TEXT NOT NULL,
+        password_salt BLOB NOT NULL,
         password_hash BLOB NOT NULL,
-        status INTEGER NOT NULL)""")
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER,
+        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
 
-    cur.execute("""CREATE TABLE IF NOT EXISTS user_basic_info (
-                userid TEXT PRIMARY KEY,
-                avatar TEXT,
-                birthday INTEGER,
-                height INTEGER,
-                weight INTEGER,
-                hometown TEXT,
-                current_city TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS user_profile (
+        user_id TEXT PRIMARY KEY,
+        pub_id TEXT UNIQUE NOT NULL,
+        pub_id_changed_at INTEGER,
+        nickname TEXT NOT NULL,
+        avatar_id TEXT,
+        gender TEXT,
+        birth_date INTEGER,
+        city TEXT,
+        bio TEXT,
+        words TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER,
+        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
 
-    cur.execute("""CREATE TABLE IF NOT EXISTS user_education (
-                userid TEXT,
-                education_level TEXT,
-                school_name TEXT,
-                school_start_date INTEGER,
-                school_end_date INTEGER)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS user_attributes (
+        user_id TEXT PRIMARY KEY,
+        hieght_cm INTEGER,
+        weight_kg INTEGER,
+        hometown TEXT,
+        education_level TEXT,
+        ocupation TEXT,
+        income_level TEXT,
+        updated_at INTEGER,
+        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
 
-    cur.execute("""CREATE TABLE IF NOT EXISTS user_occupation (
-                userid TEXT PRIMARY KEY,
-                job_type TEXT,
-                income_level TEXT)""")
-
-    cur.execute("""CREATE TABLE IF NOT EXISTS user_photo (
-                userid TEXT PRIMARY KEY,
-                p1 TEXT,
-                p2 TEXT,
-                p3 TEXT,
-                p4 TEXT,
-                p5 TEXT,
-                p6 TEXT,
-                p7 TEXT,
-                p8 TEXT,
-                p9 TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS user_media (
+        media_id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        media_type TEXT NOT NULL,
+        storage_key TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
     
-    cur.execute("""CREATE TABLE IF NOT EXISTS user_words (
-                userid TEXT PRIMARY KEY,
-                words TEXT)""")
-
     db.commit()
     cur.close()
     db.close()
 
 
-def create_log_db():
-    db = sqlite3.connect("log.db")
+def create_sessions_db():
+    db = sqlite3.connect("sessions.db")
     cur = db.cursor()
 
-    cur.execute("""CREATE TABLE IF NOT EXISTS login_logout_log (
-                userid TEXT,
-                action TEXT,
-                action_time INTEGER,
-                action_result INTEGER)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS user_session (
+        session_id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        expires_at INTEGER NOT NULL,
+        ip_hash TEXT,
+        user_agent TEXT)""")
 
     db.commit()
     cur.close()
     db.close()
 
 
-def create_session_db():
-    db = sqlite3.connect("session.db")
+def create_logs_db():
+    db = sqlite3.connect("logs.db")
     cur = db.cursor()
 
-    cur.execute("""CREATE TABLE IF NOT EXISTS live_session (
-                session_id TEXT PRIMARY KEY,
-                userid TEXT,
-                expire_time INTEGER)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS auth_logs (
+        log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT,
+        action TEXT NOT NULL,
+        action_result TEXT,
+        reated_at INTEGER NOT NULL,
+        metadata TEXT)""")
 
     db.commit()
     cur.close()
     db.close()
+
 
 
 def list_users():
@@ -119,10 +132,10 @@ def list_users():
 def main():
     if sys.argv[1] == "create-usersdb":
         create_users_db()
-    elif sys.argv[1] == "create-logdb":
-        create_log_db()
-    elif sys.argv[1] == "create-sessiondb":
-        create_session_db()
+    elif sys.argv[1] == "create-logsdb":
+        create_logs_db()
+    elif sys.argv[1] == "create-sessionsdb":
+        create_sessions_db()
     elif sys.argv[1] == "list":
         list_users()
 
