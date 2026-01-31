@@ -9,8 +9,8 @@
         <div class="layout-wrapper">
 
             <form action="/signin"  method="post"  name="signin_form" class="signin-form">
-                <label for="userid">用户ID:</label>
-                <input type="text" name="userid" id="userid" size="25" required>
+                <label for="user_id">用户ID:</label>
+                <input type="text" name="user_id" id="user_id" size="25" required>
                 {% if error.get("userid") %}
                 <p class="error-msg">{{ ";".join(error["userid"]) }}</p>
                 {% endif %}

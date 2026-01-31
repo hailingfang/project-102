@@ -9,11 +9,11 @@
             <div class="layout-wrapper">
                 <form action="/signup" method="post" name="signup_form" class="signup-form" enctype="multipart/form-data">
                     <div>
-                        <label for="userid">用户ID*:</label>
-                        <input type="text" name="userid" id="userid" size="30" min="1" max="16" required>
+                        <label for="user_id">用户ID*:</label>
+                        <input type="text" name="user_id" id="user_id" size="30" min="1" max="16" required>
                         <p class="note">1至16位的字母，数字及”-“的组合，不能以“-”开头</p>
-                        {% if error.get("userid") %}
-                        <p class="error">{{ ";".join(error["userid"]) }}</p>
+                        {% if error.get("pub_id") %}
+                        <p class="error">{{ ";".join(error["pub_id"]) }}</p>
                         {% endif %}
                     </div>
                     <div>
@@ -41,8 +41,8 @@
                         {% endif %}
                     </div>
                     <div>
-                        <label for="password-confirm">再次输入密码*:</label>
-                        <input type="password" name="password-confirm" id="password-confirm" size="30" min="9" max="32" required>
+                        <label for="password_confirm">再次输入密码*:</label>
+                        <input type="password" name="password_confirm" id="password_confirm" size="30" min="9" max="32" required>
                     </div>
 
                     <input type="hidden" name="form-name" value="signup_form">
