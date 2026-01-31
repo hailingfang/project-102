@@ -28,14 +28,14 @@ def create_users_db():
     cur = db.cursor()
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_identity (
-        user_id TEXT RPIMARY KEY,
+        user_id_db TEXT RPIMARY KEY,
         status TEXT NOT NULL DEFAULT 'active',
         created_at INTEGER NOT NULL,
-        updated_at INTEGER NOT NULL,
+        updated_at INTEGER,
         deleted_at INTEGER)""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_credentials (
-        user_id TEXT RPIMARY KEY,
+        user_id_db TEXT RPIMARY KEY,
         email TEXT UNIQUE,
         email_verified INTEGER NOT NULL DEFAULT 0,
         phone TEXT UNIQUE,
@@ -45,12 +45,12 @@ def create_users_db():
         password_hash BLOB NOT NULL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER,
-        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
+        FOREIGN KEY (user_id_db) REFERENCES user_identity(user_id_db))""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_profile (
-        user_id TEXT PRIMARY KEY,
-        pub_id TEXT UNIQUE NOT NULL,
-        pub_id_changed_at INTEGER,
+        user_id_db TEXT PRIMARY KEY,
+        user_id TEXT UNIQUE NOT NULL,
+        user_id_changed_at INTEGER,
         nickname TEXT NOT NULL,
         avatar_id TEXT,
         gender TEXT,
@@ -60,10 +60,10 @@ def create_users_db():
         words TEXT,
         created_at INTEGER NOT NULL,
         updated_at INTEGER,
-        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
+        FOREIGN KEY (user_id_db) REFERENCES user_identity(user_id_db))""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_attributes (
-        user_id TEXT PRIMARY KEY,
+        user_id_db TEXT PRIMARY KEY,
         hieght_cm INTEGER,
         weight_kg INTEGER,
         hometown TEXT,
@@ -71,15 +71,15 @@ def create_users_db():
         ocupation TEXT,
         income_level TEXT,
         updated_at INTEGER,
-        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
+        FOREIGN KEY (user_id_db) REFERENCES user_identity(user_id_db))""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_media (
         media_id TEXT PRIMARY KEY,
-        user_id TEXT NOT NULL,
+        user_id_db TEXT NOT NULL,
         media_type TEXT NOT NULL,
         storage_key TEXT NOT NULL,
         created_at INTEGER NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES user_identity(user_id))""")
+        FOREIGN KEY (user_id_db) REFERENCES user_identity(user_id_db))""")
     
     db.commit()
     cur.close()
@@ -92,7 +92,7 @@ def create_sessions_db():
 
     cur.execute("""CREATE TABLE IF NOT EXISTS user_session (
         session_id TEXT PRIMARY KEY,
-        user_id TEXT NOT NULL,
+        user_id_db TEXT NOT NULL,
         created_at INTEGER NOT NULL,
         expires_at INTEGER NOT NULL,
         ip_hash TEXT,
@@ -109,10 +109,10 @@ def create_logs_db():
 
     cur.execute("""CREATE TABLE IF NOT EXISTS auth_logs (
         log_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id TEXT,
+        user_id_db TEXT,
         action TEXT NOT NULL,
         action_result TEXT,
-        reated_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
         metadata TEXT)""")
 
     db.commit()

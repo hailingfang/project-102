@@ -54,12 +54,12 @@ class Sqlite3_DB():
         return error
 
 
-    def delete(self, table, clumn_name, value):
+    def delete(self, table, column_name, value):
         error = None
 
         cur = self.connect.cursor()
         try:
-            cur.execute(f"DELETE FROM {table} WHERE {clumn_name} = ?", (value,))
+            cur.execute(f"DELETE FROM {table} WHERE {column_name} = ?", (value,))
             self.connect.commit()
         except Exception as err:
             error = err
@@ -68,6 +68,19 @@ class Sqlite3_DB():
 
         return error
 
+
+    def update(self, table, column_name, value, update_column_s, update_value_s):
+        error = None
+        cur = self.connect.cursor()
+        update_columns_str = [f"{ele} = ?" for ele in update_column_s]
+        update_columns_str = ", ".join(update_columns_str)
+        try:
+            cur.execute(f"UPDATE {table} SET {update_columns_str} WHERE {column_name} = ?", update_value_s + [value])
+        except Exception as err:
+            error = err
+        finally:
+            cur.close()
+        return error
 
 
 

@@ -22,15 +22,17 @@ def index():
     session_id = request.cookies.get("session_id")
 
     if session_id:
-        userid = helper_fun.check_session(session_id)
-        if userid:
-            return render_template("index.html", userid=userid)
+        user_id = helper_fun.check_session(session_id)
+        if user_id:
+            profile = helper_fun.query_user_profile(user_id)
+            return render_template("index.html", user_id=user_id, profile=profile)
         else:
-            resp = make_response(render_template("index.html", userid=None))
-            resp.delete_cookie("session_id")
-            return resp
+            return render_template("index.html", user_id=None)
     else:
-        return render_template("index.html", userid=None)
+        session_id = secrets.token_urlsafe(32)
+        resp = make_response(render_template("index.html", user_id=None))
+        resp.set_cookie("session_id", session_id, httponly=True)
+        return render_template("index.html", user_id=None)
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -40,20 +42,26 @@ def signup():
     print(request.cookies)
 
     if request.method == "GET":
-        if request.cookies.get("session_id"):
-            return redirect(url_for("user"))
-        elif session.get("verify_signup") == "OK":
-            signup_form = session["signup_form"]
-            helper_fun.add_user(userid=signup_form["userid"],
-                                nickname=signup_form["nickname"],
-                                phone=signup_form["phone"],
-                                email=signup_form["email"],
-                                password=signup_form["password"],
-                                signup_time=datetime.datetime.now())
-            session.clear()
-            return render_template("signup-successfully.html")
+        session_id = request.cookies.get("session_id")
+        if session_id:
+            user_id = helper_fun.check_session(session_id=session_id)
+            if user_id:
+                return redirect(url_for("user"))
+            else:
+                if session.get("verified_signup") == "OK":
+                    signup_form = session["signup_form"]
+                    helper_fun.add_user(pub_id=signup_form["pub_id"],
+                                               nickname=signup_form["nickname"],
+                                               phone=signup_form["phone"],
+                                               email=signup_form["email"],
+                                               password=signup_form["password"])
+                else:
+                    return render_template("signup.html", error={})
         else:
-            return render_template("signup.html", error={})
+            resp = make_response(render_template("signup.html", error={}))
+            session_id = secrets.token_urlsafe(32)
+            resp.set_cookie("session_id", session_id, httponly=True)
+            return resp
 
     elif request.method == "POST":
         signup_form = request.form
@@ -68,7 +76,7 @@ def signup():
             session["contact_type"] = contact_type
             session["contact_address"] = contact_address
             return redirect(url_for("verify"))
-        
+
         else:
             return render_template("signup.html", error=error)
 
@@ -145,15 +153,14 @@ def signin():
         error, signin_form = helper_fun.check_signin_form(signin_form)
 
         if not error:
-            print("+++++++", error)
-            userid = signin_form["userid"]
+            user_id = signin_form["user_id"]
             session_id = secrets.token_urlsafe(32)
-            helper_fun.add_signin_signout_entry(userid=userid,
+            helper_fun.add_signin_signout_entry(user_id=user_id,
                                                 action="signin",
                                                 action_time=datetime.datetime.now(),
                                                 action_result=0)
             helper_fun.add_session_entry(session_id, 
-                                         userid,
+                                         user_id,
                                          datetime.datetime.now() +
                                          datetime.timedelta(days=30))
 
@@ -174,9 +181,9 @@ def signout():
     
     session_id = request.cookies.get("session_id")
     if session_id:
-        userid = helper_fun.check_session(session_id)
-        if userid:
-            helper_fun.add_signin_signout_entry(userid=userid,
+        user_id = helper_fun.check_session(session_id)
+        if user_id:
+            helper_fun.add_signin_signout_entry(user_id=user_id,
                                                 action="signout",
                                                 action_time=datetime.datetime.now(),
                                                 action_result=0)
@@ -194,9 +201,10 @@ def user():
     print(request.cookies)
 
     if request.cookies.get("session_id"):
-        userid = helper_fun.check_session(request.cookies.get("session_id"))
-        if userid:
-            return render_template("user.html", userid=userid)
+        user_id = helper_fun.check_session(request.cookies.get("session_id"))
+        if user_id:
+            profile_data = {}
+            return render_template("user.html", user_id=user_id, page="profile", profile_data=profile_data)
         else:
             session.clear()
             resp = make_response(redirect(url_for("signin")))
